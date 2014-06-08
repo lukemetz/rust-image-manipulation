@@ -120,7 +120,7 @@ pub fn main() {
   let num_slice = img.width/pixels_per_slice;
   let height = img.height.to_f32().unwrap();
   for x in range(0, num_slice) {
-    let num_split = random::<uint>() % 10 + 40;
+    let num_split = random::<uint>() % 10 + 20;
     let mut randoms_f = Vec::from_fn(num_split, |_| random::<f32>());
     randoms_f.push(0.);
     randoms_f.push(1.);
