@@ -142,13 +142,15 @@ pub fn main() {
            (y < start.val1()+3 || y >= end.val1()-4) {
             black
           } else {
-            let scale = 15.;
+            let off_y = (y - start.val1()).to_f32().unwrap() / (end.val1() - start.val1()).to_f32().unwrap();
+            let scale = 10.;
             let ra = (random::<f32>()-0.5)/scale;
             last_r += ra;
-            last_r += (-last_r / 40.);
-            ((color.val0() + last_r).max(0.).min(1.),
-             (color.val1() + last_r).max(0.).min(1.),
-             (color.val2() + last_r).max(0.).min(1.),
+            last_r += (-last_r / 5.);
+            //last_r = last_r.max(-1.).min(1.);
+            ((color.val0() + last_r + off_y).max(0.).min(1.),
+             (color.val1() + last_r + off_y).max(0.).min(1.),
+             (color.val2() + last_r + off_y).max(0.).min(1.),
              1.)
           }
       });
