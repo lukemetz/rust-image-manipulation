@@ -143,6 +143,7 @@ pub fn main() {
             black
           } else {
             let off_y = (y - start.val1()).to_f32().unwrap() / (end.val1() - start.val1()).to_f32().unwrap();
+            let off_y = off_y / 3.;
             let scale = 10.;
             let ra = (random::<f32>()-0.5)/scale;
             last_r += ra;
