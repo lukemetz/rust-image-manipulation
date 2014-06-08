@@ -2,13 +2,6 @@ extern crate png;
 use png::{load_png, store_png};
 use std::num::{from_u8, from_u32};
 use std::rand::random;
-//TODO see numpy / opencv image.
-//resize
-//better constructors
-//Somedrawing methods
-//Make a trait
-//immutable tree diff type structure for image
-//
 
 pub struct Image {
   pub width: uint,
@@ -25,7 +18,6 @@ impl std::fmt::Show for Image {
 
 impl Image {
   pub fn new_from_libpng(pngimg : Box<png::Image>) -> Image {
-    println!("{},{}", (pngimg.width, pngimg.height), pngimg.pixels.len());
     if pngimg.color_type != png::RGBA8 {
       fail!("Only supports RGBA8");
     }
@@ -49,14 +41,7 @@ impl Image {
     }
   }
 
-  pub fn get<'a>(&'a self, x : uint, y : uint) -> &'a(f32, f32, f32, f32) {
-    self.data.get(y*self.width+x)
-  }
-
-  pub fn get_mut<'a>(&'a mut self, x : uint, y : uint) -> &'a mut (f32, f32, f32, f32) {
-    self.data.get_mut(y*self.width+x)
-  }
-
+  //Convert to libpng Image.
   pub fn to_libpng(&self) -> png::Image {
     let num_pixel = self.width * self.height;
     let mut pixels : Vec<u8> = Vec::with_capacity(num_pixel * 4);
@@ -76,8 +61,17 @@ impl Image {
     }
   }
 
+  //Get pixel
+  pub fn get<'a>(&'a self, x : uint, y : uint) -> &'a(f32, f32, f32, f32) {
+    self.data.get(y*self.width+x)
+  }
 
-  //Fun methods
+  //Get mutable pixel
+  pub fn get_mut<'a>(&'a mut self, x : uint, y : uint) -> &'a mut (f32, f32, f32, f32) {
+    self.data.get_mut(y*self.width+x)
+  }
+
+  //add rectangle with the result of op. op runs on each pixel.
   pub fn add_rectangle(&mut self, start : (uint, uint), end : (uint, uint),
     op : |uint, uint| -> (f32, f32, f32, f32)) {
 
@@ -89,7 +83,8 @@ impl Image {
   }
 }
 
-pub fn get_color_rect(img : &Image, start : (uint, uint), end : (uint, uint)) -> (f32, f32, f32, f32) {
+//Get the mean of colors in the rectangle
+pub fn get_mean_color_rect(img : &Image, start : (uint, uint), end : (uint, uint)) -> (f32, f32, f32, f32) {
   let mut accum = (0., 0., 0., 0.);
   for x in range(start.val0(), end.val0()) {
     for y in range(start.val1(), end.val1()) {
@@ -120,6 +115,8 @@ pub fn main() {
   let num_slice = img.width/pixels_per_slice;
   let height = img.height.to_f32().unwrap();
   for x in range(0, num_slice) {
+
+    //Make points to split
     let num_split = random::<uint>() % 5 + 4;
     let mut randoms_f = Vec::from_fn(num_split, |_| random::<f32>());
     randoms_f.push(0.);
@@ -132,23 +129,28 @@ pub fn main() {
       let start = (x * pixels_per_slice, *randoms.get(y));
       let end = ((x+1) * pixels_per_slice, *randoms.get(y+1));
 
-      let color = get_color_rect(&img, start, end);
+      let color = get_mean_color_rect(&img, start, end);
       let black = (0., 0., 0., 1.);
       let white = (1., 1., 1., 1.);
 
+      //feedback loop variable for random numbers
       let mut last_r = 0.;
       img.add_rectangle(start, end, |x,y| {
+        //if on the border
         if (x < start.val0()+3 || x >= end.val0()-4) ||
            (y < start.val1()+3 || y >= end.val1()-4) {
             black
           } else {
+            //Gradient top to bottom.
             let off_y = (y - start.val1()).to_f32().unwrap() / (end.val1() - start.val1()).to_f32().unwrap();
-            let off_y = off_y / 3.;
+            let off_y = off_y / 4.;
+            let off_y = -off_y;
             let scale = 10.;
+            //Add some noise
             let ra = (random::<f32>()-0.5)/scale;
             last_r += ra;
             last_r += (-last_r / 5.);
-            //last_r = last_r.max(-1.).min(1.);
+
             ((color.val0() + last_r + off_y).max(0.).min(1.),
              (color.val1() + last_r + off_y).max(0.).min(1.),
              (color.val2() + last_r + off_y).max(0.).min(1.),
