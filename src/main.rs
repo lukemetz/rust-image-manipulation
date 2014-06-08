@@ -116,11 +116,11 @@ pub fn main() {
   };
   let mut img = Image::new_from_libpng(img);
 
-  let pixels_per_slice = 50u;
+  let pixels_per_slice = 200u;
   let num_slice = img.width/pixels_per_slice;
   let height = img.height.to_f32().unwrap();
   for x in range(0, num_slice) {
-    let num_split = random::<uint>() % 15 + 0;
+    let num_split = random::<uint>() % 5 + 4;
     let mut randoms_f = Vec::from_fn(num_split, |_| random::<f32>());
     randoms_f.push(0.);
     randoms_f.push(1.);
@@ -135,8 +135,8 @@ pub fn main() {
       let color = get_color_rect(&img, start, end);
       let black = (0., 0., 0., 1.);
       img.add_rectangle(start, end, |x,y| {
-        if (x < start.val0()+2 || x >= end.val0()-4) ||
-           (y < start.val1()+2 || y >= end.val1()-4) {
+        if (x < start.val0()+10 || x >= end.val0()-10) ||
+           (y < start.val1()+10 || y >= end.val1()-10) {
             black
           } else {
             color
