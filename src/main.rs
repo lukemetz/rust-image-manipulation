@@ -116,7 +116,7 @@ pub fn main() {
   };
   let mut img = Image::new_from_libpng(img);
 
-  let pixels_per_slice = 200u;
+  let pixels_per_slice = 100u;
   let num_slice = img.width/pixels_per_slice;
   let height = img.height.to_f32().unwrap();
   for x in range(0, num_slice) {
@@ -133,10 +133,10 @@ pub fn main() {
       let end = ((x+1) * pixels_per_slice, *randoms.get(y+1));
 
       let color = get_color_rect(&img, start, end);
-      let black = (0., 0., 0., 1.);
+      let black = (1., 1., 1., 1.);
       img.add_rectangle(start, end, |x,y| {
-        if (x < start.val0()+10 || x >= end.val0()-10) ||
-           (y < start.val1()+10 || y >= end.val1()-10) {
+        if (x < start.val0()+7 || x >= end.val0()-7) ||
+           (y < start.val1()+7 || y >= end.val1()-7) {
             black
           } else {
             color
