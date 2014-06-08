@@ -116,7 +116,7 @@ pub fn main() {
   };
   let mut img = Image::new_from_libpng(img);
 
-  let pixels_per_slice = 30u;
+  let pixels_per_slice = 5u;
   let num_slice = img.width/pixels_per_slice;
   let height = img.height.to_f32().unwrap();
   for x in range(0, num_slice) {
