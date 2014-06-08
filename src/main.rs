@@ -133,13 +133,23 @@ pub fn main() {
       let end = ((x+1) * pixels_per_slice, *randoms.get(y+1));
 
       let color = get_color_rect(&img, start, end);
-      let black = (1., 1., 1., 1.);
+      let black = (0., 0., 0., 1.);
+      let white = (1., 1., 1., 1.);
+
+      let mut last_r = 0.;
       img.add_rectangle(start, end, |x,y| {
         if (x < start.val0()+7 || x >= end.val0()-7) ||
            (y < start.val1()+7 || y >= end.val1()-7) {
             black
           } else {
-            color
+            let scale = 20.;
+            let ra = (random::<f32>()-0.5)/scale;
+            last_r += ra;
+            last_r += (-last_r / 10.);
+            ((color.val0() + last_r).max(0.).min(1.),
+             (color.val1() + last_r).max(0.).min(1.),
+             (color.val2() + last_r).max(0.).min(1.),
+             1.)
           }
       });
     }
