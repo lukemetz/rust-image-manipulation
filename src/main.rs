@@ -116,11 +116,11 @@ pub fn main() {
   };
   let mut img = Image::new_from_libpng(img);
 
-  let pixels_per_slice = 2u;
+  let pixels_per_slice = 10u;
   let num_slice = img.width/pixels_per_slice;
   let height = img.height.to_f32().unwrap();
   for x in range(0, num_slice) {
-    let num_split = random::<uint>() % 10 + 10;
+    let num_split = random::<uint>() % 10 + 40;
     let mut randoms_f = Vec::from_fn(num_split, |_| random::<f32>());
     randoms_f.push(0.);
     randoms_f.push(1.);
