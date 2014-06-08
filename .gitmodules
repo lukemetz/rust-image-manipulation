@@ -1,0 +1,3 @@
+[submodule "lib/rust-png"]
+	path = lib/rust-png
+	url = git@github.com:mozilla-servo/rust-png.git
