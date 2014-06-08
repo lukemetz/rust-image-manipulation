@@ -110,13 +110,13 @@ pub fn get_color_rect(img : &Image, start : (uint, uint), end : (uint, uint)) ->
 }
 
 pub fn main() {
-  let img = match load_png(&Path::new("img.png")) {
+  let img = match load_png(&Path::new("imgs.png")) {
     Ok(img) => box img,
     Err(string) => fail!("{}", string)
   };
   let mut img = Image::new_from_libpng(img);
 
-  let pixels_per_slice = 100u;
+  let pixels_per_slice = 50u;
   let num_slice = img.width/pixels_per_slice;
   let height = img.height.to_f32().unwrap();
   for x in range(0, num_slice) {
@@ -138,14 +138,14 @@ pub fn main() {
 
       let mut last_r = 0.;
       img.add_rectangle(start, end, |x,y| {
-        if (x < start.val0()+7 || x >= end.val0()-7) ||
-           (y < start.val1()+7 || y >= end.val1()-7) {
+        if (x < start.val0()+3 || x >= end.val0()-4) ||
+           (y < start.val1()+3 || y >= end.val1()-4) {
             black
           } else {
-            let scale = 20.;
+            let scale = 15.;
             let ra = (random::<f32>()-0.5)/scale;
             last_r += ra;
-            last_r += (-last_r / 10.);
+            last_r += (-last_r / 40.);
             ((color.val0() + last_r).max(0.).min(1.),
              (color.val1() + last_r).max(0.).min(1.),
              (color.val2() + last_r).max(0.).min(1.),
