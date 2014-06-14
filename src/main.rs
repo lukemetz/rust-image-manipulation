@@ -12,7 +12,7 @@ pub struct Image {
 
 impl std::fmt::Show for Image {
   fn fmt(&self, f : &mut std::fmt::Formatter) -> Result<(), std::fmt::FormatError> {
-    write!(f, "Image\\{width:{}, height:{}\\}", self.width, self.height)
+    write!(f, "Image{{width:{}, height:{}}}", self.width, self.height)
   }
 }
 
